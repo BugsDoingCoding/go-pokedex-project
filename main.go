@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"bufio"
+	"fmt"
 	"os"
 )
 
@@ -19,6 +19,15 @@ func main() {
 			continue
 		}
 
-		fmt.Printf("Your command was: %s\n", words[0])
+		commandName := words[0]
+		command, exists := getCommands()[commandName]
+		if exists {
+			err := command.callback()
+			if err != nil {
+				fmt.Println(err)
+			}
+		} else {
+			fmt.Println("Unknown command")
+		}
 	}
 }
