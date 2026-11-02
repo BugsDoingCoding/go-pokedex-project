@@ -33,6 +33,24 @@ type locationAreaDetail struct {
 	} `json:"pokemon_encounters"`
 }
 
+type Pokemon struct {
+	Name           string `json:"name"`
+	BaseExperience int    `json:"base_experience"`
+	Height         int    `json:"height"`
+	Weight         int    `json:"weight"`
+	Stats          []struct {
+		BaseStat int `json:"base_stat"`
+		Stat     struct {
+			Name string `json:"name"`
+		} `json:"stat"`
+	} `json:"stats"`
+	Types []struct {
+		Type struct {
+			Name string `json:"name"`
+		} `json:"type"`
+	} `json:"types"`
+}
+
 func getJSON(url string, target any) error {
 	body, ok := cache.Get(url)
 	if !ok {
@@ -64,5 +82,11 @@ func fetchLocationAreas(url string) (locationAreasResponse, error) {
 func fetchLocationArea(name string) (locationAreaDetail, error) {
 	var data locationAreaDetail
 	err := getJSON(baseURL+"/location-area/"+name, &data)
+	return data, err
+}
+
+func fetchPokemon(name string) (Pokemon, error) {
+	var data Pokemon
+	err := getJSON(baseURL+"/pokemon/"+name, &data)
 	return data, err
 }

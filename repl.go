@@ -11,6 +11,7 @@ type config struct {
 	commands         map[string]cliCommand
 	nextLocationsURL *string
 	prevLocationsURL *string
+	pokedex          map[string]Pokemon
 }
 
 type cliCommand struct {
@@ -77,6 +78,11 @@ func getCommands() map[string]cliCommand {
 			name:        "explore",
 			description: "Lists the Pokemon in a location area",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Try to catch a Pokemon",
+			callback:    commandCatch,
 		},
 	}
 }
