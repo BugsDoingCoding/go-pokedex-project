@@ -24,30 +24,45 @@ type locationAreasResponse struct {
 	} `json:"results"`
 }
 
-func fetchLocationAreas(url string) (locationAreasResponse, error) {
+type locationAreaDetail struct {
+	Name              string `json:"name"`
+	PokemonEncounters []struct {
+		Pokemon struct {
+			Name string `json:"name"`
+		} `json:"pokemon"`
+	} `json:"pokemon_encounters"`
+}
+
+func getJSON(url string, target any) error {
 	body, ok := cache.Get(url)
 	if !ok {
 		resp, err := http.Get(url)
 		if err != nil {
-			return locationAreasResponse{}, err
+			return err
 		}
 		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
-			return locationAreasResponse{}, fmt.Errorf("bad status: %s", resp.Status)
+			return fmt.Errorf("bad status: %s", resp.Status)
 		}
 
 		body, err = io.ReadAll(resp.Body)
 		if err != nil {
-			return locationAreasResponse{}, err
+			return err
 		}
 		cache.Add(url, body)
 	}
+	return json.Unmarshal(body, target)
+}
 
+func fetchLocationAreas(url string) (locationAreasResponse, error) {
 	var data locationAreasResponse
-	err := json.Unmarshal(body, &data)
-	if err != nil {
-		return locationAreasResponse{}, err
-	}
-	return data, nil
+	err := getJSON(url, &data)
+	return data, err
+}
+
+func fetchLocationArea(name string) (locationAreaDetail, error) {
+	var data locationAreaDetail
+	err := getJSON(baseURL+"/location-area/"+name, &data)
+	return data, err
 }

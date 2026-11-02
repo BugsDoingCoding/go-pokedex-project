@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func commandMap(cfg *config) error {
+func commandMap(cfg *config, args ...string) error {
 	url := baseURL + "/location-area"
 	if cfg.nextLocationsURL != nil {
 		url = *cfg.nextLocationsURL
@@ -10,7 +10,7 @@ func commandMap(cfg *config) error {
 	return showLocationPage(cfg, url)
 }
 
-func commandMapb(cfg *config) error {
+func commandMapb(cfg *config, args ...string) error {
 	if cfg.prevLocationsURL == nil {
 		fmt.Println("you're on the first page")
 		return nil
